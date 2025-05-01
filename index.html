@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casket Pricing Tool</title>
+  <!-- Including prop-types.min.js first -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.8.1/prop-types.min.js"></script>
+  <!-- Including React and ReactDOM -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <!-- Including Babel for JSX transformation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <!-- Including Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // Defining the original casket data from 2022
+    const initialCaskets = [
+      { name: "Regency Solid Mahogany", type: "Wood", cost: 6155, discount: 1846.5, discountPct: 0.3, netCost: 4308.5, tax: 531.1765, totalCost: 4839.6765, retail: 6995, margin: 2155.3235 },
+      { name: "Gatewood Solid Cherry", type: "Wood", cost: 4615, discount: 1384.5, discountPct: 0.3, netCost: 3230.5, tax: 398.2745, totalCost: 3628.7745, retail: 5995, margin: 2366.2255 },
+      { name: "Kinross Solid Maple", type: "Wood", cost: 4430, discount: 1329, discountPct: 0.3, netCost: 3101, tax: 382.309, totalCost: 3483.309, retail: 5795, margin: 2311.691 },
+      { name: "Malorie Maple", type: "Wood", cost: 4000, discount: 1200, discountPct: 0.3, netCost: 2800, tax: 345.2, totalCost: 3145.2, retail: 5295, margin: 2149.8 },
+      { name: "Montgomery Ash", type: "Wood", cost: 3820, discount: 1146, discountPct: 0.3, netCost: 2674, tax: 329.666, totalCost: 3003.666, retail: 4995, margin: 1991.334 },
+      { name: "Du Valais Oak", type: "Wood", cost: 3425, discount: 1027.5, discountPct: 0.3, netCost: 2397.5, tax: 295.5775, totalCost: 2693.0775, retail: 4495, margin: 1801.9225 },
+      { name: "Kingsport Poplar", type: "Wood", cost: 2970, discount: 1140, discountPct: 0.3838383838383838, netCost: 1830, tax: 157.929, totalCost: 1987.929, retail: 3995, margin: 2007.071 },
+      { name: "Harris Solid Poplar", type: "Wood", cost: 2995, discount: 1163, discountPct: 0.388313856427379, netCost: 1832, tax: 158.1016, totalCost: 1990.1016, retail: 3895, margin: 1904.8984 },
+      { name: "Fredrick Solid Poplar", type: "Wood", cost: 2925, discount: 1098, discountPct: 0.37538461538461537, netCost: 1827, tax: 157.6701, totalCost: 1984.6701, retail: 3895, margin: 1910.3299 },
+      { name: "Graham Solid Poplar", type: "Wood", cost: 3320, discount: 1610, discountPct: 0.48493975903614456, netCost: 1710, tax: 147.573, totalCost: 1857.573, retail: 3795, margin: 1937.427 },
+      { name: "Renaissance Poplar Veneer", type: "Wood", cost: 2930, discount: 1279, discountPct: 0.43651877133105804, netCost: 1651, tax: 142.4813, totalCost: 1793.4813, retail: 3695, margin: 1901.5187 },
+      { name: "Fenwick Solid Poplar", type: "Wood", cost: 3055, discount: 1427, discountPct: 0.46710310965630114, netCost: 1628, tax: 140.4964, totalCost: 1768.4964, retail: 3495, margin: 1726.5036 },
+      { name: "Whitmire Veneer", type: "Wood", cost: 2075, discount: 673, discountPct: 0.32433734939759035, netCost: 1402, tax: 120.9926, totalCost: 1522.9926, retail: 3395, margin: 1872.0074 },
+      { name: "Endicot Poplar Veneer", type: "Wood", cost: 2000, discount: 765, discountPct: 0.3825, netCost: 1235, tax: 106.5805, totalCost: 1341.5805, retail: 3195, margin: 1853.4195 },
+      { name: "Ashford Satin Walnut Veneer", type: "Wood", cost: 1810, discount: 657, discountPct: 0.3629834254143646, netCost: 1153, tax: 99.5039, totalCost: 1252.5039, retail: 2995, margin: 1742.4961 },
+      { name: "Onyx SST", type: "Metal", cost: 4290, discount: 1287, discountPct: 0.3, netCost: 3003, tax: 370.227, totalCost: 3373.227, retail: 5995, margin: 2621.773 },
+      { name: "Champagne Rose SST", type: "Metal", cost: 4290, discount: 1287, discountPct: 0.3, netCost: 3003, tax: 370.227, totalCost: 3373.227, retail: 5995, margin: 2621.773 },
+      { name: "Pieta 18 GA", type: "Metal", cost: 3470, discount: 1041, discountPct: 0.3, netCost: 2429, tax: 299.461, totalCost: 2728.461, retail: 4995, margin: 2266.539 },
+      { name: "Hamilton 18 GA", type: "Metal", cost: 3250, discount: 975, discountPct: 0.3, netCost: 2275, tax: 280.475, totalCost: 2555.475, retail: 4795, margin: 2239.525 },
+      { name: "5085 Conwell 18 GA", type: "Metal", cost: 3230, discount: 969, discountPct: 0.3, netCost: 2261, tax: 278.749, totalCost: 2539.749, retail: 4795, margin: 2255.251 },
+      { name: "Hyacinth 18GA", type: "Metal", cost: 3105, discount: 931.5, discountPct: 0.3, netCost: 2173.5, tax: 267.9615, totalCost: 2441.4615, retail: 4595, margin: 2153.5385 },
+      { name: "Garrison 18 GA", type: "Metal", cost: 3075, discount: 1084, discountPct: 0.35252032520325205, netCost: 1991, tax: 171.8233, totalCost: 2162.8233, retail: 4595, margin: 2432.1767 },
+      { name: "Stapleton 18 GA", type: "Metal", cost: 3190, discount: 957, discountPct: 0.3, netCost: 2233, tax: 275.297, totalCost: 2508.297, retail: 4395, margin: 1886.703 },
+      { name: "Freedom Veteran 18 Ga", type: "Metal", cost: 2640, discount: 792, discountPct: 0.3, netCost: 1848, tax: 227.832, totalCost: 2075.832, retail: 4295, margin: 2219.168 },
+      { name: "Springfield 18GA", type: "Metal", cost: 2860, discount: 858, discountPct: 0.3, netCost: 2002, tax: 246.818, totalCost: 2248.818, retail: 4195, margin: 1946.182 },
+      { name: "Keystone Rolex 18GA", type: "Metal", cost: 2710, discount: 813, discountPct: 0.3, netCost: 1897, tax: 233.873, totalCost: 2130.873, retail: 3995, margin: 1864.127 },
+      { name: "Pierce 18GA", type: "Metal", cost: 2745, discount: 823.5, discountPct: 0.3, netCost: 1921.5, tax: 236.8935, totalCost: 2158.3935, retail: 3995, margin: 1836.6065 },
+      { name: "Sterling 18 GA", type: "Metal", cost: 2520, discount: 756, discountPct: 0.3, netCost: 1764, tax: 217.476, totalCost: 1981.476, retail: 3795, margin: 1813.524 },
+      { name: "Sierra 18 GA", type: "Metal", cost: 2415, discount: 724.5, discountPct: 0.3, netCost: 1690.5, tax: 208.4145, totalCost: 1898.9145, retail: 3495, margin: 1596.0855 },
+      { name: "Civic 18 Ga", type: "Metal", cost: 2290, discount: 911, discountPct: 0.3978165938864629, netCost: 1379, tax: 119.0077, totalCost: 1498.0077, retail: 3395, margin: 1896.9923 },
+      { name: "Monarch 20 GA", type: "Metal", cost: 2140, discount: 642, discountPct: 0.3, netCost: 1498, tax: 184.682, totalCost: 1682.682, retail: 3295, margin: 1612.318 },
+      { name: "1058 Series 20 GA", type: "Metal", cost: 2035, discount: 610.5, discountPct: 0.3, netCost: 1424.5, tax: 175.6205, totalCost: 1600.1205, retail: 3195, margin: 1594.8795 },
+      { name: "Valencia 20 GA", type: "Metal", cost: 1620, discount: 486, discountPct: 0.3, netCost: 1134, tax: 139.806, totalCost: 1273.806, retail: 2895, margin: 1621.194 },
+      { name: "Jessup 20GA", type: "Metal", cost: 1710, discount: 966, discountPct: 0.5649122807017544, netCost: 744, tax: 64.2072, totalCost: 808.2072, retail: 2595, margin: 1786.7928 },
+      { name: "Sutton B 20 GA Non Gasket", type: "Metal", cost: 1330, discount: 650, discountPct: 0.48872180451127817, netCost: 680, tax: 58.684, totalCost: 738.684, retail: 2195, margin: 1456.316 },
+      { name: "Baron/85 20 GA Non Gasket", type: "Metal", cost: 1235, discount: 652, discountPct: 0.5279352226720648, netCost: 583, tax: 50.3129, totalCost: 633.3129, retail: 1995, margin: 1361.6871 }
+    ];
+
+    // Creating the main App component
+    function App() {
+      const [caskets, setCaskets] = React.useState(initialCaskets);
+      const [selectedCasketIndex, setSelectedCasketIndex] = React.useState(null);
+      const [desiredMarginPct, setDesiredMarginPct] = React.useState(51.64); // Default to original average margin
+
+      // Handling margin percentage input change
+      const handleMarginChange = (e) => {
+        const value = parseFloat(e.target.value);
+        if (!isNaN(value) && value >= 0 && value <= 100 && selectedCasketIndex !== null) {
+          setDesiredMarginPct(value);
+          // Updating only the selected casket
+          const updatedCaskets = caskets.map((casket, index) => {
+            if (index === selectedCasketIndex) {
+              const desiredMarginDecimal = value / 100;
+              // Retail = Total Cost / (1 - Desired Margin %)
+              const newRetail = desiredMarginDecimal < 1 ? casket.totalCost / (1 - desiredMarginDecimal) : casket.totalCost * 2; // Prevent division by zero
+              const newMargin = newRetail - casket.totalCost;
+              return { ...casket, retail: Math.round(newRetail * 100) / 100, margin: Math.round(newMargin * 100) / 100 };
+            }
+            return casket;
+          });
+          setCaskets(updatedCaskets);
+        }
+      };
+
+      // Handling casket selection
+      const handleCasketSelect = (index) => {
+        setSelectedCasketIndex(index);
+        // Reset margin to the selected casket's original margin
+        const selectedCasket = caskets[index];
+        const originalMarginPct = (selectedCasket.margin / selectedCasket.retail) * 100;
+        setDesiredMarginPct(originalMarginPct);
+      };
+
+      // Rendering the UI
+      return (
+        <div className="container mx-auto p-6">
+          <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Casket Pricing Tool</h1>
+
+          {/* Original 2022 Pricing Table */}
+          <h2 className="text-2xl font-semibold mb-4 text-gray-700">Original 2022 Casket Pricing</h2>
+          <div className="overflow-x-auto mb-12">
+            <table className="min-w-full bg-white border rounded-lg shadow-lg">
+              <thead>
+                <tr className="bg-gray-600 text-white">
+                  <th className="p-3 text-left">Casket Name</th>
+                  <th className="p-3 text-left">Type</th>
+                  <th className="p-3 text-right">Cost ($)</th>
+                  <th className="p-3 text-right">Discount ($)</th>
+                  <th className="p-3 text-right">Discount %</th>
+                  <th className="p-3 text-right">NET Cost ($)</th>
+                  <th className="p-3 text-right">Tax ($)</th>
+                  <th className="p-3 text-right">Total Cost ($)</th>
+                  <th className="p-3 text-right">Retail ($)</th>
+                  <th className="p-3 text-right">Margin ($)</th>
+                  <th className="p-3 text-right">Margin %</th>
+                </tr>
+              </thead>
+              <tbody>
+                {initialCaskets.map((casket, index) => (
+                  <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                    <td className="p-3">{casket.name}</td>
+                    <td className="p-3">{casket.type}</td>
+                    <td className="p-3 text-right">{casket.cost.toFixed(2)}</td>
+                    <td className="p-3 text-right">{casket.discount.toFixed(2)}</td>
+                    <td className="p-3 text-right">{(casket.discountPct * 100).toFixed(2)}%</td>
+                    <td className="p-3 text-right">{casket.netCost.toFixed(2)}</td>
+                    <td className="p-3 text-right">{casket.tax.toFixed(2)}</td>
+                    <td className="p-3 text-right">{casket.totalCost.toFixed(2)}</td>
+                    <td className="p-3 text-right font-semibold">{casket.retail.toFixed(2)}</td>
+                    <td className="p-3 text-right">{casket.margin.toFixed(2)}</td>
+                    <td className="p-3 text-right">{((casket.margin / casket.retail) * 100).toFixed(2)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Interactive Pricing Adjuster Table */}
+          <h2 className="text-2xl font-semibold mb-4 text-gray-700">Adjustable Casket Pricing (Single Casket)</h2>
+          <div className="mb-6 flex justify-center items-center">
+            <label className="mr-4 text-lg text-gray-700 flex items-center">
+              Desired Margin (%):
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="0.1"
+                value={desiredMarginPct}
+                onChange={handleMarginChange}
+                className="ml-2 w-48"
+                disabled={selectedCasketIndex === null}
+              />
+              <span className="ml-2">{desiredMarginPct.toFixed(1)}%</span>
+            </label>
+            <input
+              type="number"
+              value={desiredMarginPct}
+              onChange={handleMarginChange}
+              className="p-2 border rounded w-24"
+              min="0"
+              max="100"
+              step="0.1"
+              disabled={selectedCasketIndex === null}
+            />
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border rounded-lg shadow-lg">
+              <thead>
+                <tr className="bg-blue-600 text-white">
+                  <th className="p-3 text-center">Select</th>
+                  <th className="p-3 text-left">Casket Name</th>
+                  <th className="p-3 text-left">Type</th>
+                  <th className="p-3 text-right">Cost ($)</th>
+                  <th className="p-3 text-right">Discount ($)</th>
+                  <th className="p-3 text-right">Discount %</th>
+                  <th className="p-3 text-right">NET Cost ($)</th>
+                  <th className="p-3 text-right">Tax ($)</th>
+                  <th className="p-3 text-right">Total Cost ($)</th>
+                  <th className="p-3 text-right">Retail ($)</th>
+                  <th className="p-3 text-right">Margin ($)</th>
+                  <th className="p-3 text-right">Margin %</th>
+                </tr>
+              </thead>
+              <tbody>
+                {caskets.map((casket, index) => (
+                  <tr
+                    key={index}
+                    className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} ${selectedCasketIndex === index ? 'bg-blue-100' : ''}`}
+                  >
+                    <td className="p-3 text-center">
+                      <input
+                        type="radio"
+                        name="casketSelect"
+                        checked={selectedCasketIndex === index}
+                        onChange={() => handleCasketSelect(index)}
+                      />
+                    </td>
+                    <td className="p-3">{casket.name}</td>
+                    <td className="p-3">{casket.type}</td>
+                    <td className="p-3 text-right">{casket.cost.toFixed(2)}</td>
+                    <td className="p-3 text-right">{casket.discount.toFixed(2)}</td>
+                    <td className="p-3 text-right">{(casket.discountPct * 100).toFixed(2)}%</td>
+                    <td className="p-3 text-right">{casket.netCost.toFixed(2)}</td>
+                    <td className="p-3 text-right">{casket.tax.toFixed(2)}</td>
+                    <td className="p-3 text-right">{casket.totalCost.toFixed(2)}</td>
+                    <td className="p-3 text-right font-semibold">{casket.retail.toFixed(2)}</td>
+                    <td className="p-3 text-right">{casket.margin.toFixed(2)}</td>
+                    <td className="p-3 text-right">{((casket.margin / casket.retail) * 100).toFixed(2)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {selectedCasketIndex === null && (
+            <p className="mt-4 text-center text-gray-600">Please select a casket to adjust its margin.</p>
+          )}
+        </div>
+      );
+    }
+
+    // Rendering the App component
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
